@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Splitwise-payg</string>
+    <string name="welcome_message">Welcome to Splitwise, User!</string>
+    <string name="groups_guidance_message">Splitwise groups you create or are added to will show here.</string>
+    <string name="friends_guidance_message">You can see your lovely friends here!</string>
+    <string name="activity_guidance_message">Planning something exciting? Create an activity for it!</string>
+    <string name="account_placeholder">Placeholder</string>
+    <string name="basic_image_description">Content Image</string>
+    <string name="create_activity_button">Create a new activity</string>
+    <string name="add_friend_button">Add someone to your circle</string>
+    <string name="start_new_group_button">Start a new group</string>
+    <string name="add_expense_button">Add expense</string>
+    <string name="bottom_nav_bar_groups">Groups</string>
+    <string name="bottom_nav_bar_friends">Friends</string>
+    <string name="bottom_nav_bar_activity">Activity</string>
+    <string name="bottom_nav_bar_account">Account</string>
+    <string name="top_bar_search_button">Search Button</string>
+    <string name="top_bar_add_friends_button">Add Friends</string>
+</resources>
