@@ -12,11 +12,10 @@ import com.example.splitwise_payg.R
 const val MAINTHEMEGREEN = 0xFF57d455
 
 @Composable
-fun WelcomeMessage() = Text(
-    text = stringResource(R.string.welcome_message),
+fun WelcomeMessage(userName: String) = Text(
+    text = if (userName.isEmpty()) stringResource(R.string.welcome_message_guest) else stringResource(R.string.welcome_message, userName),
     fontWeight = FontWeight.Bold,
-    modifier = Modifier
-        .fillMaxWidth(),
+    modifier = Modifier.fillMaxWidth(),
     textAlign = TextAlign.Start
 )
 

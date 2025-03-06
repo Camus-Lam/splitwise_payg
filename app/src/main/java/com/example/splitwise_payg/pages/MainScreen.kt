@@ -16,31 +16,36 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.splitwise_payg.AddExpenseDialog
+import com.example.splitwise_payg.event.ExpenseEvent
+import com.example.splitwise_payg.LoginPage
 import com.example.splitwise_payg.R
 import com.example.splitwise_payg.ui.components.BottomBar
 import com.example.splitwise_payg.ui.components.MAINTHEMEGREEN
 import com.example.splitwise_payg.ui.components.TopBar
+import com.example.splitwise_payg.viewModel.UserViewModel
 
-@Preview
+
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
+fun MainScreen(modifier: Modifier = Modifier, viewModel: UserViewModel) {
 
     val textStyle = MaterialTheme.typography.labelLarge
     val fontSize = textStyle.fontSize
+    val state by viewModel.state.collectAsState()
 
-    var selectedIndex by remember {
-        mutableIntStateOf(0)
-    }
+    var selectedIndex by remember { mutableIntStateOf(0) }
+    var showAddExpenseDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -55,7 +60,11 @@ fun MainScreen(modifier: Modifier = Modifier) {
         },
         floatingActionButton = {
             Button(
-                onClick = {},
+                onClick = {
+                    if (state.isLoggedIn) {
+                        showAddExpenseDialog = true
+                    }
+                },
                 modifier = Modifier
                     .padding(10.dp),
                 colors = ButtonDefaults.buttonColors(
@@ -76,16 +85,44 @@ fun MainScreen(modifier: Modifier = Modifier) {
         },
         floatingActionButtonPosition = FabPosition.End
     ) { innerPadding ->
-        ContentSection(modifier = Modifier.padding(innerPadding), selectedIndex)
+        ContentSection(modifier = Modifier.padding(innerPadding), selectedIndex, viewModel)
+    }
+
+    if(showAddExpenseDialog) {
+        AddExpenseDialog(viewModel = viewModel, onCancel = { showAddExpenseDialog = false })
     }
 }
 
 @Composable
-fun ContentSection(modifier: Modifier = Modifier, selectedIndex: Int) {
+fun ContentSection(modifier: Modifier = Modifier, selectedIndex: Int, viewModel: UserViewModel) {
+    val state by viewModel.state.collectAsState()
+
     when (selectedIndex) {
-        0 -> GroupsPage(modifier = modifier)
-        1 -> FriendsPage(modifier = modifier)
-        2 -> ActivityPage(modifier = modifier)
-        3 -> AccountPage(modifier = modifier)
+        0 -> GroupsPage(modifier = modifier, viewModel = viewModel)
+        1 -> FriendsPage(modifier = modifier, viewModel = viewModel)
+        2 -> {
+            if (state.isLoggedIn){
+                viewModel.onExpenseEvent(ExpenseEvent.showExpenses(state.userId!!))
+                if (state.expenses != null && state.expenses!!.allExpenses.isNotEmpty()) {
+                    ExpenseListPanel(modifier = modifier, viewModel = viewModel)
+                } else {
+                    ActivityPage(modifier = modifier, viewModel = viewModel)
+                }
+            } else {
+                ActivityPage(modifier = modifier, viewModel = viewModel)
+            }
+
+        }
+        3 -> {
+            if (state.isLoggedIn) {
+                AccountPage(modifier = modifier, viewModel = viewModel)
+            } else {
+                LoginPage(
+                    modifier = modifier,
+                    viewModel = viewModel,
+                    onLoginSuccess = { }
+                )
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Splitwise-payg</string>
-    <string name="welcome_message">Welcome to Splitwise, User!</string>
+    <string name="welcome_message">Welcome to Splitwise, %s!</string>
     <string name="groups_guidance_message">Splitwise groups you create or are added to will show here.</string>
     <string name="friends_guidance_message">You can see your lovely friends here!</string>
     <string name="activity_guidance_message">Planning something exciting? Create an activity for it!</string>
@@ -16,4 +16,5 @@
     <string name="bottom_nav_bar_account">Account</string>
     <string name="top_bar_search_button">Search Button</string>
     <string name="top_bar_add_friends_button">Add Friends</string>
+    <string name="welcome_message_guest">Welcome Guest! Please login to use Splitwise!</string>
 </resources>

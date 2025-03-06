@@ -11,6 +11,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.example.splitwise_payg.R
 import com.example.splitwise_payg.ui.components.MAINTHEMEGREEN
 import com.example.splitwise_payg.ui.components.WelcomeMessage
+import com.example.splitwise_payg.viewModel.UserViewModel
 
 @Composable
 fun BasePage(
@@ -31,17 +34,19 @@ fun BasePage(
     buttonIconRes: Int,
     buttonTextRes: Int,
     onButtonClick: () -> Unit,
+    viewModel: UserViewModel,
     modifier: Modifier = Modifier
 ) {
     val textStyle = MaterialTheme.typography.labelLarge
     val fontSize = textStyle.fontSize
+    val state by viewModel.state.collectAsState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier.padding(25.dp),
     ) {
-        WelcomeMessage()
+        WelcomeMessage(state.fullName)
         Image(
             painter = painterResource(imageRes),
             contentDescription = stringResource(R.string.basic_image_description)
