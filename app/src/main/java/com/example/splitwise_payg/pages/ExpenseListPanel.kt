@@ -16,11 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.splitwise_payg.event.ExpenseEvent
+import androidx.compose.ui.res.stringResource
+import com.example.splitwise_payg.R
 import com.example.splitwise_payg.enumClasses.OwnershipType
 import com.example.splitwise_payg.enumClasses.SplitType
+import com.example.splitwise_payg.event.ExpenseEvent
+import com.example.splitwise_payg.ui.theme.Dimensions.spacingMedium
+import com.example.splitwise_payg.ui.theme.Fonts.expenseItemDetailsFontSize
+import com.example.splitwise_payg.ui.theme.Fonts.expenseItemTitleFontSize
 import com.example.splitwise_payg.viewModel.UserViewModel
 
 @Composable
@@ -32,10 +35,11 @@ fun ExpenseListPanel(
 
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        contentPadding = PaddingValues(spacingMedium),
+        verticalArrangement = Arrangement.spacedBy(spacingMedium)
     ) {
-        items(state.expenses!!.allExpenses) {expense ->
+        val expensesList = state.expenses?.allExpenses ?: emptyList()
+        items(expensesList) {expense ->
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -44,28 +48,44 @@ fun ExpenseListPanel(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = "${expense.currency.symbol} ${expense.amount}",
-                        fontSize = 20.sp
+                        text = stringResource(
+                            R.string.expense_display_amount,
+                            expense.currency.symbol,
+                            expense.amount
+                        ),
+                        fontSize = expenseItemTitleFontSize
                     )
                     Text(
-                        text = "Paid/Owing: ${OwnershipType.toString(expense.ownershipType)}",
-                        fontSize = 12.sp
+                        text = stringResource(
+                            R.string.expense_display_ownership_type,
+                            OwnershipType.getDisplayText(expense.ownershipType)
+                        ),
+                        fontSize = expenseItemDetailsFontSize
                     )
                     Text(
-                        text = "Split: ${SplitType.toString(expense.splitType)}",
-                        fontSize = 12.sp
+                        text = stringResource(
+                            R.string.expense_display_split_type,
+                            SplitType.getDescription(expense.splitType)
+                        ),
+                        fontSize = expenseItemDetailsFontSize
                     )
-                    Text(
-                        text = "Target user Id: ${expense.targetUserId}",
-                        fontSize = 12.sp
-                    )
+                    expense.targetUserId?.let { targetUserId ->
+                        Text(
+                            text =
+                            stringResource(
+                                R.string.expense_display_target_user_id,
+                                targetUserId
+                            ),
+                            fontSize = expenseItemDetailsFontSize
+                        )
+                    }
                 }
                 IconButton(onClick = {
                     viewModel.onExpenseEvent(ExpenseEvent.deleteExpense(expense))
                 }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete expense"
+                        contentDescription = stringResource(R.string.delete_expense_button)
                     )
                 }
             }

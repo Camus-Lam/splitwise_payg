@@ -1,25 +1,26 @@
 package com.example.splitwise_payg.enumClasses
 
+import com.example.splitwise_payg.R
+
 enum class SplitType {
     EVEN,
     FULL,
     CUSTOM;
 
     companion object {
-        fun fromString(value: String): SplitType? {
-            return when (value.lowercase()) {
-                "even" -> EVEN
-                "full" -> FULL
-                "custom" -> CUSTOM
-                else -> null
+        fun getDescription(splitType: SplitType): Int {
+            return when (splitType) {
+                EVEN -> R.string.even_split_description
+                FULL -> R.string.full_split_description
+                CUSTOM -> R.string.custom_split_description
             }
         }
 
-        fun toString(splitType: SplitType): String {
+        fun getDisplayText(splitType: SplitType): Int {
             return when (splitType) {
-                EVEN -> "Split evenly between payer and owee"
-                FULL -> "Fully paid by owee"
-                CUSTOM -> "TBD"
+                EVEN -> R.string.even_split_display_text
+                FULL -> R.string.full_split_display_text
+                CUSTOM -> R.string.custom_split_display_text
             }
         }
     }

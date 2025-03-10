@@ -25,9 +25,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.splitwise_payg.event.AccountEvent
-import com.example.splitwise_payg.ui.components.MAINTHEMEGREEN
+import com.example.splitwise_payg.ui.theme.Dimensions.spacingMedium
+import com.example.splitwise_payg.ui.theme.MAINTHEMEGREEN
 import com.example.splitwise_payg.viewModel.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,7 +53,7 @@ fun SignUpDialog(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(spacingMedium),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -59,40 +61,39 @@ fun SignUpDialog(
                 TextField(
                     value = fullName,
                     onValueChange = { fullName = it },
-                    placeholder = { Text("Full Name") },
+                    placeholder = { Text(stringResource(R.string.user_sign_up_full_name_placeholder)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(spacingMedium))
 
                 TextField(
                     value = emailAddress,
                     onValueChange = { emailAddress = it },
-                    placeholder = { Text("Email Address") },
+                    placeholder = { Text(stringResource(R.string.user_sign_up_email_placeholder)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(spacingMedium))
 
                 TextField(
                     value = password,
                     onValueChange = { password = it },
-                    placeholder = { Text("Password") },
+                    placeholder = { Text(stringResource(R.string.user_sign_up_password_placeholder)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(spacingMedium))
 
                 TextField(
                     value = phoneNumber,
                     onValueChange = { phoneNumber = it },
-                    placeholder = { Text("Phone Number (Optional)") },
+                    placeholder = { Text(stringResource(R.string.user_sign_up_phone_number_placeholder)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(spacingMedium))
 
-                // Buttons Row
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
@@ -103,10 +104,10 @@ fun SignUpDialog(
                         },
                         enabled = !state.isLoading,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(MAINTHEMEGREEN)
+                            containerColor = MAINTHEMEGREEN
                         )
                     ) {
-                        Text("Sign Up")
+                        Text(stringResource(R.string.user_sign_up_button))
                     }
 
                     Button(
@@ -115,30 +116,27 @@ fun SignUpDialog(
                         },
                         enabled = !state.isLoading,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(MAINTHEMEGREEN)
+                            containerColor = MAINTHEMEGREEN
                         )
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.cancel_button))
                     }
                 }
 
-                // Loading Indicator
                 if (state.isLoading) {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(spacingMedium))
                     CircularProgressIndicator()
                 }
 
-                // Error Message
-                if (state.errorMessage != null) {
-                    Spacer(modifier = Modifier.height(16.dp))
+                state.errorMessage?.let{ errorMessage ->
+                    Spacer(modifier = Modifier.height(spacingMedium))
                     Text(
-                        text = state.errorMessage!!,
+                        text = errorMessage,
                         color = Color.Red,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
 
-                // Success Message (optional)
                 if (state.isLoggedIn) {
                     onCancel()
                     onLoginSuccess()

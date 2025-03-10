@@ -23,8 +23,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.splitwise_payg.R
-import com.example.splitwise_payg.ui.components.MAINTHEMEGREEN
 import com.example.splitwise_payg.ui.components.WelcomeMessage
+import com.example.splitwise_payg.ui.theme.Borders
+import com.example.splitwise_payg.ui.theme.Dimensions.spacingLarge
+import com.example.splitwise_payg.ui.theme.Dimensions.spacingMedium
+import com.example.splitwise_payg.ui.theme.Dimensions.spacingSmall
+import com.example.splitwise_payg.ui.theme.MAINTHEMEGREEN
 import com.example.splitwise_payg.viewModel.UserViewModel
 
 @Composable
@@ -43,8 +47,8 @@ fun BasePage(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = modifier.padding(25.dp),
+        verticalArrangement = Arrangement.spacedBy(spacingMedium),
+        modifier = modifier.padding(spacingLarge),
     ) {
         WelcomeMessage(state.fullName)
         Image(
@@ -60,18 +64,18 @@ fun BasePage(
         OutlinedButton(
             onClick = onButtonClick,
             shape = RectangleShape,
-            border = BorderStroke(1.dp, Color(MAINTHEMEGREEN))
+            border = BorderStroke(Borders.buttonBorderThin, MAINTHEMEGREEN)
         ) {
             Icon(
                 painter = painterResource(buttonIconRes),
                 contentDescription = stringResource(buttonTextRes),
                 modifier = Modifier.size(fontSize.value.dp * 1.5f),
-                tint = Color(MAINTHEMEGREEN)
+                tint = MAINTHEMEGREEN
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(spacingSmall))
             Text(
                 text = stringResource(buttonTextRes),
-                color = Color(MAINTHEMEGREEN)
+                color = MAINTHEMEGREEN
             )
         }
     }

@@ -11,9 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.example.splitwise_payg.R
 import com.example.splitwise_payg.dataClasses.NavItem
+import com.example.splitwise_payg.ui.theme.Dimensions.spacingLarge
 
 val TopBarItems = listOf(
     NavItem(R.string.top_bar_search_button, R.drawable.search),
@@ -34,7 +34,7 @@ fun TopBar(modifier: Modifier = Modifier) {
                         painter = painterResource(item.icon),
                         contentDescription = stringResource(item.labelResId),
                         tint = Color.DarkGray,
-                        modifier = Modifier.size(25.dp)
+                        modifier = Modifier.size(spacingLarge)
                     )
                 }
             }

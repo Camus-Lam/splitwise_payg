@@ -23,7 +23,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -32,8 +31,9 @@ import com.example.splitwise_payg.event.ExpenseEvent
 import com.example.splitwise_payg.LoginPage
 import com.example.splitwise_payg.R
 import com.example.splitwise_payg.ui.components.BottomBar
-import com.example.splitwise_payg.ui.components.MAINTHEMEGREEN
 import com.example.splitwise_payg.ui.components.TopBar
+import com.example.splitwise_payg.ui.theme.Dimensions.spacingSmall
+import com.example.splitwise_payg.ui.theme.MAINTHEMEGREEN
 import com.example.splitwise_payg.viewModel.UserViewModel
 
 
@@ -66,9 +66,9 @@ fun MainScreen(modifier: Modifier = Modifier, viewModel: UserViewModel) {
                     }
                 },
                 modifier = Modifier
-                    .padding(10.dp),
+                    .padding(spacingSmall),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(MAINTHEMEGREEN)
+                    containerColor = MAINTHEMEGREEN
                 )
             ) {
                 Icon(
@@ -77,7 +77,7 @@ fun MainScreen(modifier: Modifier = Modifier, viewModel: UserViewModel) {
                     modifier = Modifier
                         .size(fontSize.value.dp * 1.5f)
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(spacingSmall))
                 Text(
                     text = stringResource(R.string.add_expense_button)
                 )
@@ -102,8 +102,11 @@ fun ContentSection(modifier: Modifier = Modifier, selectedIndex: Int, viewModel:
         1 -> FriendsPage(modifier = modifier, viewModel = viewModel)
         2 -> {
             if (state.isLoggedIn){
-                viewModel.onExpenseEvent(ExpenseEvent.showExpenses(state.userId!!))
-                if (state.expenses != null && state.expenses!!.allExpenses.isNotEmpty()) {
+                state.userId?.let { id ->
+                    viewModel.onExpenseEvent(ExpenseEvent.showExpenses(id))
+                }
+                val expenses = state.expenses
+                if (expenses?.allExpenses?.isNotEmpty() == true) {
                     ExpenseListPanel(modifier = modifier, viewModel = viewModel)
                 } else {
                     ActivityPage(modifier = modifier, viewModel = viewModel)
@@ -111,7 +114,6 @@ fun ContentSection(modifier: Modifier = Modifier, selectedIndex: Int, viewModel:
             } else {
                 ActivityPage(modifier = modifier, viewModel = viewModel)
             }
-
         }
         3 -> {
             if (state.isLoggedIn) {

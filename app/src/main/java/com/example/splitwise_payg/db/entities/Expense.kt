@@ -4,6 +4,7 @@ import android.icu.util.Currency
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.example.splitwise_payg.enumClasses.CurrencyCode
 import com.example.splitwise_payg.enumClasses.OwnershipType
 import com.example.splitwise_payg.enumClasses.SplitType
 import java.math.BigDecimal
@@ -17,7 +18,7 @@ import java.math.BigDecimal
 )
 data class Expense(
     val amount: BigDecimal,
-    val currency: Currency = Currency.getInstance("CAD"),
+    val currency: Currency = Currency.getInstance(CurrencyCode.CAD.code),
     val creatorId: Int,
     val targetUserId: Int? = null,
     val targetGroupId: Int? = null,

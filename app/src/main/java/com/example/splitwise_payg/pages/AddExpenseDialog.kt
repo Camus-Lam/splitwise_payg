@@ -29,10 +29,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
+import com.example.splitwise_payg.enumClasses.CurrencyCode
+import com.example.splitwise_payg.enumClasses.OwnershipType
+import com.example.splitwise_payg.enumClasses.SplitType
 import com.example.splitwise_payg.event.ExpenseEvent
-import com.example.splitwise_payg.ui.components.MAINTHEMEGREEN
+import com.example.splitwise_payg.ui.theme.Dimensions.spacingMedium
+import com.example.splitwise_payg.ui.theme.MAINTHEMEGREEN
 import com.example.splitwise_payg.viewModel.UserViewModel
 import java.math.BigDecimal
 
@@ -46,10 +50,10 @@ fun AddExpenseDialog(
     val state by viewModel.state.collectAsState()
 
     var amount by remember { mutableStateOf("") }
-    var currency by remember { mutableStateOf("CAD") }
+    var currency by remember { mutableStateOf(CurrencyCode.CAD.code) }
     var targetUserId by remember { mutableStateOf("") }
-    var ownershipType by remember {mutableStateOf("") }
-    var splitType by remember {mutableStateOf("") }
+    var ownershipType by remember {mutableStateOf(OwnershipType.CREATOR_PAID) }
+    var splitType by remember {mutableStateOf(SplitType.EVEN) }
     var currencyExpanded by remember { mutableStateOf(false) }
     var ownershipExpanded by remember { mutableStateOf(false) }
     var splitExpanded by remember { mutableStateOf(false) }
@@ -60,7 +64,7 @@ fun AddExpenseDialog(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(spacingMedium),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -79,12 +83,12 @@ fun AddExpenseDialog(
                             }
                         }
                     },
-                    placeholder = { Text("Expense Amount (e.g., 12.34)") },
+                    placeholder = { Text(stringResource(R.string.add_expense_amount_placeholder)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(spacingMedium))
 
                 ExposedDropdownMenuBox(
                     expanded = currencyExpanded,
@@ -94,7 +98,7 @@ fun AddExpenseDialog(
                         value = currency,
                         onValueChange = {},
                         readOnly = true,
-                        placeholder = { Text("Expense Currency") },
+                        placeholder = { Text(stringResource(R.string.add_expense_currency_placeholder)) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = currencyExpanded) },
                         modifier = Modifier
                             .menuAnchor()
@@ -105,30 +109,30 @@ fun AddExpenseDialog(
                         onDismissRequest = { currencyExpanded = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text("CAD") },
+                            text = { Text(CurrencyCode.CAD.code) },
                             onClick = {
-                                currency = "CAD"
+                                currency = CurrencyCode.CAD.code
                                 currencyExpanded = false
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("USD") },
+                            text = { Text(CurrencyCode.USD.code) },
                             onClick = {
-                                currency = "USD"
+                                currency = CurrencyCode.USD.code
                                 currencyExpanded = false
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("JPY") },
+                            text = { Text(CurrencyCode.JPY.code) },
                             onClick = {
-                                currency = "JPY"
+                                currency = CurrencyCode.JPY.code
                                 currencyExpanded = false
                             }
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(spacingMedium))
 
                 TextField(
                     value = targetUserId,
@@ -137,22 +141,22 @@ fun AddExpenseDialog(
                             targetUserId = newValue
                         }
                     },
-                    placeholder = { Text("User to split with (User ID)") },
+                    placeholder = { Text(stringResource(R.string.add_expense_target_user_placeholder)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(spacingMedium))
 
                 ExposedDropdownMenuBox(
                     expanded = ownershipExpanded,
                     onExpandedChange = { ownershipExpanded = !ownershipExpanded }
                 ) {
                     TextField(
-                        value = ownershipType,
+                        value = stringResource(OwnershipType.getDisplayText(ownershipType)),
                         onValueChange = {},
                         readOnly = true,
-                        placeholder = { Text("Are you owing or paid?") },
+                        placeholder = { Text(stringResource(R.string.add_expense_ownership_type_placeholder)) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = ownershipExpanded) },
                         modifier = Modifier
                             .menuAnchor()
@@ -163,33 +167,33 @@ fun AddExpenseDialog(
                         onDismissRequest = { ownershipExpanded = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Paid") },
+                            text = { Text(stringResource(R.string.paid_ownership_display_text)) },
                             onClick = {
-                                ownershipType = "Paid"
+                                ownershipType = OwnershipType.CREATOR_PAID
                                 ownershipExpanded = false
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Owing") },
+                            text = { Text(stringResource(R.string.owing_ownership_display_text)) },
                             onClick = {
-                                ownershipType = "Owing"
+                                ownershipType = OwnershipType.TARGET_PAID
                                 ownershipExpanded = false
                             }
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(spacingMedium))
 
                 ExposedDropdownMenuBox(
                     expanded = splitExpanded,
                     onExpandedChange = { splitExpanded = !splitExpanded }
                 ) {
                     TextField(
-                        value = splitType,
+                        value = stringResource(SplitType.getDisplayText(splitType)),
                         onValueChange = {},
                         readOnly = true,
-                        placeholder = { Text("Split type") },
+                        placeholder = { Text(stringResource(R.string.add_expense_split_type_placeholder)) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = splitExpanded) },
                         modifier = Modifier
                             .menuAnchor()
@@ -200,30 +204,30 @@ fun AddExpenseDialog(
                         onDismissRequest = { splitExpanded = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Even") },
+                            text = { Text(stringResource(R.string.even_split_display_text)) },
                             onClick = {
-                                splitType = "Even"
+                                splitType = SplitType.EVEN
                                 splitExpanded = false
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Full") },
+                            text = { Text(stringResource(R.string.full_split_display_text)) },
                             onClick = {
-                                splitType = "Full"
+                                splitType = SplitType.FULL
                                 splitExpanded = false
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Custom") },
+                            text = { Text(stringResource(R.string.custom_split_display_text)) },
                             onClick = {
-                                splitType = "Custom"
+                                splitType = SplitType.CUSTOM
                                 splitExpanded = false
                             }
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(spacingMedium))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -243,7 +247,7 @@ fun AddExpenseDialog(
                         },
                         enabled = !state.isLoading,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(MAINTHEMEGREEN)
+                            containerColor = MAINTHEMEGREEN
                         )
                     ) {
                         Text("Add")
@@ -255,7 +259,7 @@ fun AddExpenseDialog(
                         },
                         enabled = !state.isLoading,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(MAINTHEMEGREEN)
+                            containerColor = MAINTHEMEGREEN
                         )
                     ) {
                         Text("Cancel")
@@ -263,14 +267,14 @@ fun AddExpenseDialog(
                 }
 
                 if (state.isLoading) {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(spacingMedium))
                     CircularProgressIndicator()
                 }
 
-                if (state.errorMessage != null) {
-                    Spacer(modifier = Modifier.height(16.dp))
+                state.errorMessage?.let { errorMessage ->
+                    Spacer(modifier = Modifier.height(spacingMedium))
                     Text(
-                        text = state.errorMessage!!,
+                        text = errorMessage,
                         color = Color.Red,
                         style = MaterialTheme.typography.bodyMedium
                     )

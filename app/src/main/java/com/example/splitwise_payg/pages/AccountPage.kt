@@ -11,13 +11,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.example.splitwise_payg.event.AccountEvent
-import com.example.splitwise_payg.ui.components.MAINTHEMEGREEN
 import com.example.splitwise_payg.ui.components.WelcomeMessage
+import com.example.splitwise_payg.ui.theme.Dimensions.spacingLarge
+import com.example.splitwise_payg.ui.theme.Dimensions.spacingMedium
+import com.example.splitwise_payg.ui.theme.MAINTHEMEGREEN
 import com.example.splitwise_payg.viewModel.UserViewModel
 
 @Composable
@@ -27,8 +27,8 @@ fun AccountPage(modifier: Modifier = Modifier, viewModel: UserViewModel) {
 
     Column (
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = modifier.padding(25.dp),
+        verticalArrangement = Arrangement.spacedBy(spacingMedium),
+        modifier = modifier.padding(spacingLarge),
 
         ) {
 
@@ -58,7 +58,7 @@ fun AccountPage(modifier: Modifier = Modifier, viewModel: UserViewModel) {
             },
             enabled = !state.isLoading,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(MAINTHEMEGREEN)
+                containerColor = MAINTHEMEGREEN
             ),
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {

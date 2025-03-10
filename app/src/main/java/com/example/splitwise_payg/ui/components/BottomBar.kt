@@ -11,9 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.example.splitwise_payg.R
 import com.example.splitwise_payg.dataClasses.NavItem
+import com.example.splitwise_payg.ui.theme.Dimensions.spacingLarge
+import com.example.splitwise_payg.ui.theme.MAINTHEMEGREEN
 
 val BottomBarItems = listOf(
     NavItem(R.string.bottom_nav_bar_groups, R.drawable.group),
@@ -35,16 +36,16 @@ fun BottomBar(modifier: Modifier = Modifier, selectedIndex: Int, onItemSelected:
                     Icon(
                         painter = painterResource(item.icon),
                         contentDescription = stringResource(item.labelResId),
-                        modifier = Modifier.size(25.dp)
+                        modifier = Modifier.size(spacingLarge)
                     )
                 },
                 label = {
                     Text(text = stringResource(item.labelResId))
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color(MAINTHEMEGREEN),
+                    selectedIconColor = MAINTHEMEGREEN,
                     unselectedIconColor = Color.DarkGray,
-                    selectedTextColor = Color(MAINTHEMEGREEN),
+                    selectedTextColor = MAINTHEMEGREEN,
                     unselectedTextColor = Color.DarkGray
                 )
             )

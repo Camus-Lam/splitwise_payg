@@ -9,8 +9,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.example.splitwise_payg.R
 
-const val MAINTHEMEGREEN = 0xFF57d455
-
 @Composable
 fun WelcomeMessage(userName: String) = Text(
     text = if (userName.isEmpty()) stringResource(R.string.welcome_message_guest) else stringResource(R.string.welcome_message, userName),

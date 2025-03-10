@@ -6,6 +6,7 @@ import com.example.splitwise_payg.db.domainModel.UserExpenseList
 import com.example.splitwise_payg.db.entities.Expense
 import com.example.splitwise_payg.enumClasses.OwnershipType
 import com.example.splitwise_payg.enumClasses.SplitType
+import com.example.splitwise_payg.errors.ExpenseError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
@@ -33,7 +34,7 @@ class ExpenseRepository(private val expenseDao: ExpenseDao) {
             val id = expenseDao.upsertExpense(expense)
             return Result.success(id)
         } catch (e: Exception) {
-            return Result.failure(e)
+            return Result.failure(ExpenseError.AddExpenseError())
         }
     }
 
@@ -48,7 +49,7 @@ class ExpenseRepository(private val expenseDao: ExpenseDao) {
             expenseDao.deleteExpense(expense)
             return Result.success(Unit)
         } catch (e: Exception) {
-            return Result.failure(e)
+            return Result.failure(ExpenseError.UnknownError())
         }
     }
 }

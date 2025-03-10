@@ -2,7 +2,7 @@ package com.example.splitwise_payg.db.respositories
 
 import com.example.splitwise_payg.db.dao.UserDao
 import com.example.splitwise_payg.db.entities.User
-import kotlinx.coroutines.flow.firstOrNull
+import com.example.splitwise_payg.errors.AccountError
 
 class AccountRepository(private val userDao: UserDao) {
     suspend fun userLogin(emailAddress: String, password: String): Result<User> {
@@ -11,36 +11,23 @@ class AccountRepository(private val userDao: UserDao) {
             return if (user != null) {
                 Result.success(user)
             } else {
-                Result.failure(Exception("Invalid email or password."))
+                Result.failure(AccountError.InvalidCredentials())
             }
         } catch (e: Exception) {
-            return Result.failure(e)
+            return Result.failure(AccountError.UnknownError())
         }
     }
 
     suspend fun userSignUp(fullName: String, emailAddress: String, password: String, phoneNumber: String = ""): Result<Long> {
         try {
             if(userDao.doesEmailExist(emailAddress)) {
-                return Result.failure(Exception("This email already has an account."))
+                return Result.failure(AccountError.EmailAlreadyExists())
             }
             val user = User(fullName, emailAddress, password, phoneNumber)
             val id = userDao.upsertUser(user)
             return Result.success(id)
         } catch (e: Exception) {
-            return Result.failure(e)
-        }
-    }
-
-    suspend fun getFullNameByUserId(userId: Int): Result<String> {
-        try {
-            val user = userDao.getUserById(userId).firstOrNull()
-            return if (user != null) {
-                Result.success(user.fullName)
-            } else {
-                Result.failure(Exception("User with ID $userId not found"))
-            }
-        } catch (e: Exception) {
-            return Result.failure(e)
+            return Result.failure(AccountError.UnknownError())
         }
     }
 }
