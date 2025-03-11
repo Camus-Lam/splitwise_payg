@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-                    return UserViewModel(AccountRepository(db.userDao), ExpenseRepository(db.expenseDao)) as T
+                    return UserViewModel(AccountRepository(db.userDao), ExpenseRepository(db.expenseDao, db.expenseEditHistoryDao)) as T
                 }
             }
         }

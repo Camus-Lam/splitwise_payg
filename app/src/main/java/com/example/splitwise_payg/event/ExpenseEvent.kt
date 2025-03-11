@@ -21,4 +21,14 @@ sealed interface ExpenseEvent {
     data class deleteExpense(
         val expense: Expense
     ) : ExpenseEvent
+
+    data class editExpense(
+        val amount: String,
+        val currency: String,
+        val ownershipType: OwnershipType,
+        val splitType: SplitType,
+        val targetUserId: String? = null,
+        val targetGroupId: String? = null,
+        val expense: Expense
+    ) : ExpenseEvent
 }

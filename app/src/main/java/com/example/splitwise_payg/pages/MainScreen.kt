@@ -1,8 +1,5 @@
 package com.example.splitwise_payg.pages
 
-import ActivityPage
-import FriendsPage
-import GroupsPage
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -26,9 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.splitwise_payg.AddExpenseDialog
 import com.example.splitwise_payg.event.ExpenseEvent
-import com.example.splitwise_payg.LoginPage
 import com.example.splitwise_payg.R
 import com.example.splitwise_payg.ui.components.BottomBar
 import com.example.splitwise_payg.ui.components.TopBar

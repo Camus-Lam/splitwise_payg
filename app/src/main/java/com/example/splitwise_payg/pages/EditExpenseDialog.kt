@@ -4,40 +4,42 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.example.splitwise_payg.R
-import com.example.splitwise_payg.enumClasses.CurrencyCode
+import com.example.splitwise_payg.db.entities.Expense
 import com.example.splitwise_payg.enumClasses.OwnershipType
 import com.example.splitwise_payg.enumClasses.SplitType
 import com.example.splitwise_payg.event.ExpenseEvent
 import com.example.splitwise_payg.viewModel.UserViewModel
 
 @Composable
-fun AddExpenseDialog(
+fun EditExpenseDialog(
     modifier: Modifier = Modifier,
     viewModel: UserViewModel,
+    expense: Expense,
     onCancel: () -> Unit = {}
 ) {
     BaseExpenseDialog(
         modifier = modifier,
         viewModel = viewModel,
-        amount = "",
-        currency = CurrencyCode.CAD.code,
-        targetUserId = "",
-        ownershipType = OwnershipType.CREATOR_PAID,
-        splitType = SplitType.EVEN,
-        amountPlaceholder = { Text(stringResource(R.string.add_expense_amount_placeholder)) },
-        currencyPlaceholder = { Text(stringResource(R.string.add_expense_currency_placeholder)) },
-        targetUserIdPlaceholder = { Text(stringResource(R.string.add_expense_target_user_placeholder)) },
-        ownershipTypePlaceholder = { Text(stringResource(R.string.add_expense_ownership_type_placeholder)) },
-        splitTypePlaceholder = { Text(stringResource(R.string.add_expense_split_type_placeholder)) },
+        amount = expense.amount.toString(),
+        currency = expense.currency.currencyCode,
+        targetUserId = expense.targetUserId.toString(),
+        ownershipType = expense.ownershipType,
+        splitType = expense.splitType,
+        amountPlaceholder = { Text(expense.amount.toString()) },
+        currencyPlaceholder = { Text(expense.currency.currencyCode) },
+        targetUserIdPlaceholder = { Text(expense.targetUserId.toString()) },
+        ownershipTypePlaceholder = { Text(stringResource(OwnershipType.getDisplayText(expense.ownershipType))) },
+        splitTypePlaceholder = { Text(stringResource(SplitType.getDisplayText(expense.splitType))) },
         onConfirm = { amount, currency, targetUserId, ownershipType, splitType ->
             viewModel.onExpenseEvent(
-                ExpenseEvent.addExpense(
+                ExpenseEvent.editExpense(
                     amount = amount,
                     currency = currency,
-                    targetUserId = targetUserId,
                     ownershipType = ownershipType,
-                    splitType = splitType
+                    splitType = splitType,
+                    targetUserId = targetUserId,
+                    targetGroupId = null,
+                    expense = expense
                 )
             )
             onCancel()

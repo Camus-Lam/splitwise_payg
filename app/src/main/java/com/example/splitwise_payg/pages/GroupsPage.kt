@@ -1,3 +1,5 @@
+package com.example.splitwise_payg.pages
+
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.splitwise_payg.R

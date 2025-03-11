@@ -1,17 +1,13 @@
 package com.example.splitwise_payg.viewModel
 
 import android.icu.util.Currency
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.splitwise_payg.R
-import com.example.splitwise_payg.event.AccountEvent
-import com.example.splitwise_payg.event.ExpenseEvent
 import com.example.splitwise_payg.UserState
 import com.example.splitwise_payg.db.respositories.AccountRepository
 import com.example.splitwise_payg.db.respositories.ExpenseRepository
-import com.example.splitwise_payg.enumClasses.OwnershipType
-import com.example.splitwise_payg.enumClasses.SplitType
+import com.example.splitwise_payg.event.AccountEvent
+import com.example.splitwise_payg.event.ExpenseEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -99,6 +95,7 @@ class UserViewModel(
                     }
                 }
             }
+
             is ExpenseEvent.deleteExpense -> viewModelScope.launch {
                 _state.value = _state.value.copy(isLoading = true)
                 expenseRepository.deleteExpense(event.expense).onFailure { e ->
@@ -107,7 +104,9 @@ class UserViewModel(
                     _state.value = _state.value.copy(isLoading = false)
                 }
             }
+
             is ExpenseEvent.showExpenses -> viewModelScope.launch {
+                _state.value = _state.value.copy(isLoading = true)
                 _state.value.userId?.let { userId ->
                     if (_state.value.expenses == null) {
                         expenseRepository.getUserExpenses(userId)
@@ -121,6 +120,23 @@ class UserViewModel(
                         _state.value = _state.value.copy(
                             isLoading = false
                         )
+                    }
+                }
+            }
+
+            is ExpenseEvent.editExpense -> viewModelScope.launch {
+                _state.value = _state.value.copy(isLoading = true)
+                state.value.userId?.let { userId ->
+                    expenseRepository.editExpense(
+                        amount = BigDecimal(event.amount) ,
+                        currency = Currency.getInstance(event.currency),
+                        ownershipType = event.ownershipType,
+                        splitType = event.splitType,
+                        targetUserId = event.targetUserId?.toIntOrNull(),
+                        targetGroupId = event.targetGroupId?.toIntOrNull(),
+                        expense = event.expense
+                    ).onFailure { e ->
+                        _state.value = _state.value.copy(errorMessage = e.message, isLoading = false)
                     }
                 }
             }

@@ -1,3 +1,5 @@
+package com.example.splitwise_payg.pages
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

@@ -50,4 +50,5 @@
     <string name="cancel_button">Cancel</string>
     <string name="error_message_user_login_failed">Login failed</string>
     <string name="error_message_add_expense_failed">Add Expense failed, please make sure you input the correct values</string>
+    <string name="confirm_button">Confirm</string>
 </resources>
