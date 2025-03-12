@@ -8,18 +8,18 @@ import com.example.splitwise_payg.db.entities.Expense
 import com.example.splitwise_payg.enumClasses.OwnershipType
 import com.example.splitwise_payg.enumClasses.SplitType
 import com.example.splitwise_payg.event.ExpenseEvent
-import com.example.splitwise_payg.viewModel.UserViewModel
+import com.example.splitwise_payg.viewModel.ExpenseViewModel
 
 @Composable
 fun EditExpenseDialog(
     modifier: Modifier = Modifier,
-    viewModel: UserViewModel,
+    expenseViewModel: ExpenseViewModel,
     expense: Expense,
     onCancel: () -> Unit = {}
 ) {
     BaseExpenseDialog(
         modifier = modifier,
-        viewModel = viewModel,
+        expenseViewModel = expenseViewModel,
         amount = expense.amount.toString(),
         currency = expense.currency.currencyCode,
         targetUserId = expense.targetUserId.toString(),
@@ -31,7 +31,7 @@ fun EditExpenseDialog(
         ownershipTypePlaceholder = { Text(stringResource(OwnershipType.getDisplayText(expense.ownershipType))) },
         splitTypePlaceholder = { Text(stringResource(SplitType.getDisplayText(expense.splitType))) },
         onConfirm = { amount, currency, targetUserId, ownershipType, splitType ->
-            viewModel.onExpenseEvent(
+            expenseViewModel.onExpenseEvent(
                 ExpenseEvent.editExpense(
                     amount = amount,
                     currency = currency,

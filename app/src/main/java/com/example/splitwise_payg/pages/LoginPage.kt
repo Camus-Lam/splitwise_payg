@@ -35,10 +35,10 @@ import com.example.splitwise_payg.viewModel.UserViewModel
 @Composable
 fun LoginPage(
     modifier: Modifier = Modifier,
-    viewModel: UserViewModel,
+    userViewModel: UserViewModel,
     onLoginSuccess: @Composable () -> Unit = {}
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by userViewModel.state.collectAsState()
 
     var emailAddress by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -78,7 +78,7 @@ fun LoginPage(
         ) {
             Button(
                 onClick = {
-                    viewModel.onAccountEvent(AccountEvent.Login(emailAddress, password))
+                    userViewModel.onAccountEvent(AccountEvent.Login(emailAddress, password))
                 },
                 enabled = !state.isLoading,
                 colors = ButtonDefaults.buttonColors(
@@ -127,6 +127,6 @@ fun LoginPage(
     }
 
     if(showSignUpDialog) {
-        SignUpDialog(viewModel = viewModel, onLoginSuccess = {onLoginSuccess}, onCancel = { showSignUpDialog = false })
+        SignUpDialog(userViewModel = userViewModel, onLoginSuccess = {onLoginSuccess}, onCancel = { showSignUpDialog = false })
     }
 }

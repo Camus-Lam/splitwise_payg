@@ -29,14 +29,14 @@ import com.example.splitwise_payg.event.ExpenseEvent
 import com.example.splitwise_payg.ui.theme.Dimensions.spacingMedium
 import com.example.splitwise_payg.ui.theme.Fonts.expenseItemDetailsFontSize
 import com.example.splitwise_payg.ui.theme.Fonts.expenseItemTitleFontSize
-import com.example.splitwise_payg.viewModel.UserViewModel
+import com.example.splitwise_payg.viewModel.ExpenseViewModel
 
 @Composable
 fun ExpenseListPanel(
     modifier: Modifier = Modifier,
-    viewModel: UserViewModel
+    expenseViewModel: ExpenseViewModel
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by expenseViewModel.state.collectAsState()
     var showEditExpenseDialog by remember { mutableStateOf(false) }
     var selectedExpense by remember { mutableStateOf<Expense?>(null) }
 
@@ -88,7 +88,7 @@ fun ExpenseListPanel(
                     }
                 }
                 IconButton(onClick = {
-                    viewModel.onExpenseEvent(ExpenseEvent.deleteExpense(expense))
+                    expenseViewModel.onExpenseEvent(ExpenseEvent.deleteExpense(expense))
                 }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
@@ -110,7 +110,7 @@ fun ExpenseListPanel(
     if (showEditExpenseDialog) {
         selectedExpense?.let{ expense ->
             EditExpenseDialog(
-                viewModel = viewModel,
+                expenseViewModel = expenseViewModel,
                 expense = expense,
                 onCancel = { showEditExpenseDialog = false }
             )

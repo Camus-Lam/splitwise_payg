@@ -9,17 +9,17 @@ import com.example.splitwise_payg.enumClasses.CurrencyCode
 import com.example.splitwise_payg.enumClasses.OwnershipType
 import com.example.splitwise_payg.enumClasses.SplitType
 import com.example.splitwise_payg.event.ExpenseEvent
-import com.example.splitwise_payg.viewModel.UserViewModel
+import com.example.splitwise_payg.viewModel.ExpenseViewModel
 
 @Composable
 fun AddExpenseDialog(
     modifier: Modifier = Modifier,
-    viewModel: UserViewModel,
+    expenseViewModel: ExpenseViewModel,
     onCancel: () -> Unit = {}
 ) {
     BaseExpenseDialog(
         modifier = modifier,
-        viewModel = viewModel,
+        expenseViewModel = expenseViewModel,
         amount = "",
         currency = CurrencyCode.CAD.code,
         targetUserId = "",
@@ -31,7 +31,7 @@ fun AddExpenseDialog(
         ownershipTypePlaceholder = { Text(stringResource(R.string.add_expense_ownership_type_placeholder)) },
         splitTypePlaceholder = { Text(stringResource(R.string.add_expense_split_type_placeholder)) },
         onConfirm = { amount, currency, targetUserId, ownershipType, splitType ->
-            viewModel.onExpenseEvent(
+            expenseViewModel.onExpenseEvent(
                 ExpenseEvent.addExpense(
                     amount = amount,
                     currency = currency,

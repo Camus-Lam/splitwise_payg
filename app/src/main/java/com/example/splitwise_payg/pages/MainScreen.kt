@@ -29,15 +29,16 @@ import com.example.splitwise_payg.ui.components.BottomBar
 import com.example.splitwise_payg.ui.components.TopBar
 import com.example.splitwise_payg.ui.theme.Dimensions.spacingSmall
 import com.example.splitwise_payg.ui.theme.MAINTHEMEGREEN
+import com.example.splitwise_payg.viewModel.ExpenseViewModel
 import com.example.splitwise_payg.viewModel.UserViewModel
 
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier, viewModel: UserViewModel) {
+fun MainScreen(modifier: Modifier = Modifier, userViewModel: UserViewModel, expenseViewModel: ExpenseViewModel) {
 
     val textStyle = MaterialTheme.typography.labelLarge
     val fontSize = textStyle.fontSize
-    val state by viewModel.state.collectAsState()
+    val state by userViewModel.state.collectAsState()
 
     var selectedIndex by remember { mutableIntStateOf(0) }
     var showAddExpenseDialog by remember { mutableStateOf(false) }
@@ -80,43 +81,45 @@ fun MainScreen(modifier: Modifier = Modifier, viewModel: UserViewModel) {
         },
         floatingActionButtonPosition = FabPosition.End
     ) { innerPadding ->
-        ContentSection(modifier = Modifier.padding(innerPadding), selectedIndex, viewModel)
+        ContentSection(modifier = Modifier.padding(innerPadding), selectedIndex, userViewModel, expenseViewModel)
     }
 
     if(showAddExpenseDialog) {
-        AddExpenseDialog(viewModel = viewModel, onCancel = { showAddExpenseDialog = false })
+        AddExpenseDialog(expenseViewModel = expenseViewModel, onCancel = { showAddExpenseDialog = false })
     }
 }
 
 @Composable
-fun ContentSection(modifier: Modifier = Modifier, selectedIndex: Int, viewModel: UserViewModel) {
-    val state by viewModel.state.collectAsState()
+fun ContentSection(modifier: Modifier = Modifier, selectedIndex: Int, userViewModel: UserViewModel, expenseViewModel: ExpenseViewModel) {
+    val userState by userViewModel.state.collectAsState()
+    val currentUserId by userViewModel.currentUserId.collectAsState()
+    val expenseState by expenseViewModel.state.collectAsState()
 
     when (selectedIndex) {
-        0 -> GroupsPage(modifier = modifier, viewModel = viewModel)
-        1 -> FriendsPage(modifier = modifier, viewModel = viewModel)
+        0 -> GroupsPage(modifier = modifier, userViewModel = userViewModel)
+        1 -> FriendsPage(modifier = modifier, userViewModel = userViewModel)
         2 -> {
-            if (state.isLoggedIn){
-                state.userId?.let { id ->
-                    viewModel.onExpenseEvent(ExpenseEvent.showExpenses(id))
+            if (userState.isLoggedIn){
+                currentUserId?.let { id ->
+                    expenseViewModel.onExpenseEvent(ExpenseEvent.showExpenses(id))
                 }
-                val expenses = state.expenses
+                val expenses = expenseState.expenses
                 if (expenses?.allExpenses?.isNotEmpty() == true) {
-                    ExpenseListPanel(modifier = modifier, viewModel = viewModel)
+                    ExpenseListPanel(modifier = modifier, expenseViewModel = expenseViewModel)
                 } else {
-                    ActivityPage(modifier = modifier, viewModel = viewModel)
+                    ActivityPage(modifier = modifier, userViewModel = userViewModel)
                 }
             } else {
-                ActivityPage(modifier = modifier, viewModel = viewModel)
+                ActivityPage(modifier = modifier, userViewModel = userViewModel)
             }
         }
         3 -> {
-            if (state.isLoggedIn) {
-                AccountPage(modifier = modifier, viewModel = viewModel)
+            if (userState.isLoggedIn) {
+                AccountPage(modifier = modifier, userViewModel = userViewModel)
             } else {
                 LoginPage(
                     modifier = modifier,
-                    viewModel = viewModel,
+                    userViewModel = userViewModel,
                     onLoginSuccess = { }
                 )
             }

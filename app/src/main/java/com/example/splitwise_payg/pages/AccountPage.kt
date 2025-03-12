@@ -21,9 +21,9 @@ import com.example.splitwise_payg.ui.theme.MAINTHEMEGREEN
 import com.example.splitwise_payg.viewModel.UserViewModel
 
 @Composable
-fun AccountPage(modifier: Modifier = Modifier, viewModel: UserViewModel) {
+fun AccountPage(modifier: Modifier = Modifier, userViewModel: UserViewModel) {
 
-    val state by viewModel.state.collectAsState()
+    val state by userViewModel.state.collectAsState()
 
     Column (
         horizontalAlignment = Alignment.Start,
@@ -54,7 +54,7 @@ fun AccountPage(modifier: Modifier = Modifier, viewModel: UserViewModel) {
 
         Button(
             onClick = {
-                viewModel.onAccountEvent(AccountEvent.Logout)
+                userViewModel.onAccountEvent(AccountEvent.Logout)
             },
             enabled = !state.isLoading,
             colors = ButtonDefaults.buttonColors(

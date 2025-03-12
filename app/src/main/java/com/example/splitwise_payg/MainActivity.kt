@@ -13,6 +13,7 @@ import com.example.splitwise_payg.db.UserDatabase
 import com.example.splitwise_payg.db.respositories.ExpenseRepository
 import com.example.splitwise_payg.pages.MainScreen
 import com.example.splitwise_payg.ui.theme.SplitwisepaygTheme
+import com.example.splitwise_payg.viewModel.ExpenseViewModel
 import com.example.splitwise_payg.viewModel.UserViewModel
 
 class MainActivity : ComponentActivity() {
@@ -25,11 +26,24 @@ class MainActivity : ComponentActivity() {
         ).build()
     }
 
-    private val viewModel by viewModels<UserViewModel>(
+    private lateinit var accountRepository: AccountRepository
+    private lateinit var expenseRepository: ExpenseRepository
+
+    private val userViewModel by viewModels<UserViewModel>(
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-                    return UserViewModel(AccountRepository(db.userDao), ExpenseRepository(db.expenseDao, db.expenseEditHistoryDao)) as T
+                    return UserViewModel(accountRepository) as T
+                }
+            }
+        }
+    )
+
+    private val expenseViewModel by viewModels<ExpenseViewModel>(
+        factoryProducer = {
+            object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+                    return ExpenseViewModel(expenseRepository, accountRepository) as T
                 }
             }
         }
@@ -37,9 +51,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        accountRepository = AccountRepository(db.userDao)
+        expenseRepository = ExpenseRepository(db.expenseDao, db.expenseEditHistoryDao)
+
         setContent {
             SplitwisepaygTheme {
-                MainScreen(viewModel = viewModel)
+                MainScreen(userViewModel = userViewModel, expenseViewModel = expenseViewModel)
                 }
             }
     }

@@ -1,27 +1,23 @@
 package com.example.splitwise_payg.viewModel
 
-import android.icu.util.Currency
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.splitwise_payg.UserState
 import com.example.splitwise_payg.db.respositories.AccountRepository
-import com.example.splitwise_payg.db.respositories.ExpenseRepository
 import com.example.splitwise_payg.event.AccountEvent
-import com.example.splitwise_payg.event.ExpenseEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 
 class UserViewModel(
     private val accountRepository: AccountRepository,
-    private val expenseRepository: ExpenseRepository
 ): ViewModel() {
 
     private val _state = MutableStateFlow(UserState())
     val state: StateFlow<UserState> = _state.asStateFlow()
+
+    val currentUserId: StateFlow<Int?> = accountRepository.currentUserId
 
     fun onAccountEvent(event: AccountEvent) {
         when (event) {
@@ -35,7 +31,6 @@ class UserViewModel(
                             emailAddress = user.emailAddress,
                             isLoggedIn = true,
                             isLoading = false,
-                            userId = user.id
                         )
                     },
                     onFailure = {
@@ -46,18 +41,18 @@ class UserViewModel(
                     }
                 )
             }
+
             is AccountEvent.SignUp -> viewModelScope.launch {
                 _state.value = UserState(isLoading = true)
                 val result = accountRepository.userSignUp(event.fullName, event.emailAddress, event.password, event.phoneNumber)
                 _state.value = result.fold(
-                    onSuccess = { userId ->
+                    onSuccess = {
                         UserState(
                             fullName = event.fullName,
                             emailAddress = event.emailAddress,
                             phoneNumber = event.phoneNumber,
                             isLoggedIn = true,
                             isLoading = false,
-                            userId = userId.toInt()
                         )
                     },
                     onFailure = {
@@ -71,74 +66,6 @@ class UserViewModel(
 
             is AccountEvent.Logout -> viewModelScope.launch {
                 _state.value = UserState()
-            }
-        }
-    }
-
-    fun onExpenseEvent(event: ExpenseEvent) {
-        when (event) {
-            is ExpenseEvent.addExpense -> viewModelScope.launch {
-                _state.value = _state.value.copy(isLoading = true)
-                state.value.userId?.let { userId ->
-                    expenseRepository.addExpense(
-                        amount = BigDecimal(event.amount) ,
-                        currency = Currency.getInstance(event.currency),
-                        creatorId = userId,
-                        ownershipType = event.ownershipType,
-                        splitType = event.splitType,
-                        targetUserId = event.targetUserId?.toIntOrNull(),
-                        targetGroupId = event.targetGroupId?.toIntOrNull()
-                    ).onFailure { e ->
-                        _state.value = _state.value.copy(errorMessage = e.message, isLoading = false)
-                    }.onSuccess {
-                        onExpenseEvent(ExpenseEvent.showExpenses(userId))
-                    }
-                }
-            }
-
-            is ExpenseEvent.deleteExpense -> viewModelScope.launch {
-                _state.value = _state.value.copy(isLoading = true)
-                expenseRepository.deleteExpense(event.expense).onFailure { e ->
-                    _state.value = _state.value.copy(errorMessage = e.message, isLoading = false)
-                }.onSuccess {
-                    _state.value = _state.value.copy(isLoading = false)
-                }
-            }
-
-            is ExpenseEvent.showExpenses -> viewModelScope.launch {
-                _state.value = _state.value.copy(isLoading = true)
-                _state.value.userId?.let { userId ->
-                    if (_state.value.expenses == null) {
-                        expenseRepository.getUserExpenses(userId)
-                            .collectLatest { expenseList ->
-                                _state.value = _state.value.copy(
-                                    expenses = expenseList,
-                                    isLoading = false
-                                )
-                            }
-                    } else {
-                        _state.value = _state.value.copy(
-                            isLoading = false
-                        )
-                    }
-                }
-            }
-
-            is ExpenseEvent.editExpense -> viewModelScope.launch {
-                _state.value = _state.value.copy(isLoading = true)
-                state.value.userId?.let { userId ->
-                    expenseRepository.editExpense(
-                        amount = BigDecimal(event.amount) ,
-                        currency = Currency.getInstance(event.currency),
-                        ownershipType = event.ownershipType,
-                        splitType = event.splitType,
-                        targetUserId = event.targetUserId?.toIntOrNull(),
-                        targetGroupId = event.targetGroupId?.toIntOrNull(),
-                        expense = event.expense
-                    ).onFailure { e ->
-                        _state.value = _state.value.copy(errorMessage = e.message, isLoading = false)
-                    }
-                }
             }
         }
     }

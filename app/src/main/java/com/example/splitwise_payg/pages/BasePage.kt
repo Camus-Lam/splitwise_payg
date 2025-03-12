@@ -40,12 +40,12 @@ fun BasePage(
     buttonIconRes: Int,
     buttonTextRes: Int,
     onButtonClick: () -> Unit,
-    viewModel: UserViewModel,
+    userViewModel: UserViewModel,
     modifier: Modifier = Modifier
 ) {
     val textStyle = MaterialTheme.typography.labelLarge
     val fontSize = textStyle.fontSize
-    val state by viewModel.state.collectAsState()
+    val state by userViewModel.state.collectAsState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

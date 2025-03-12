@@ -37,14 +37,14 @@ import com.example.splitwise_payg.enumClasses.OwnershipType
 import com.example.splitwise_payg.enumClasses.SplitType
 import com.example.splitwise_payg.ui.theme.Dimensions.spacingMedium
 import com.example.splitwise_payg.ui.theme.MAINTHEMEGREEN
-import com.example.splitwise_payg.viewModel.UserViewModel
+import com.example.splitwise_payg.viewModel.ExpenseViewModel
 import java.math.BigDecimal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BaseExpenseDialog(
     modifier: Modifier = Modifier,
-    viewModel: UserViewModel,
+    expenseViewModel: ExpenseViewModel,
     amount: String,
     currency: String,
     targetUserId: String,
@@ -58,7 +58,7 @@ fun BaseExpenseDialog(
     onConfirm: (String, String, String, OwnershipType, SplitType) -> Unit,
     onCancel: () -> Unit = {}
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by expenseViewModel.state.collectAsState()
 
     var currentAmount by remember { mutableStateOf(amount) }
     var currentCurrency by remember { mutableStateOf(currency) }

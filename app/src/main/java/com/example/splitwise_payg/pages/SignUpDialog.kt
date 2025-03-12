@@ -36,11 +36,11 @@ import com.example.splitwise_payg.viewModel.UserViewModel
 @Composable
 fun SignUpDialog(
     modifier: Modifier = Modifier,
-    viewModel: UserViewModel,
+    userViewModel: UserViewModel,
     onLoginSuccess: @Composable () -> Unit = {},
     onCancel: () -> Unit = {}
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by userViewModel.state.collectAsState()
 
     var fullName by remember { mutableStateOf("") }
     var emailAddress by remember { mutableStateOf("") }
@@ -100,7 +100,7 @@ fun SignUpDialog(
                 ) {
                     Button(
                         onClick = {
-                            viewModel.onAccountEvent(AccountEvent.SignUp(fullName, emailAddress, password, phoneNumber))
+                            userViewModel.onAccountEvent(AccountEvent.SignUp(fullName, emailAddress, password, phoneNumber))
                         },
                         enabled = !state.isLoading,
                         colors = ButtonDefaults.buttonColors(
